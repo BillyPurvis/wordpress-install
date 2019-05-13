@@ -7,7 +7,10 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+
+	"github.com/Songmu/prompter"
 )
 
 const downloadDir string = "./set-up"
@@ -107,38 +110,53 @@ func cleanUp(target string) error {
 }
 
 func main() {
-	// // Download the file, because you kinda need it
-	err := downloadFile(downloadDir, fmt.Sprintf("%v/%v", downloadDir, fileName), "https://wordpress.org/latest.tar.gz")
-	if err != nil {
-		panic(err)
-	}
+	// // // Download the file, because you kinda need it
+	// err := downloadFile(downloadDir, fmt.Sprintf("%v/%v", downloadDir, fileName), "https://wordpress.org/latest.tar.gz")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	// Open the file to return *File that satisfies IO.Reader
-	file, err := os.Open(fmt.Sprintf("%s/wordpress.tar.gz", downloadDir))
-	if err != nil {
-		panic(err)
-	}
+	// // Open the file to return *File that satisfies IO.Reader
+	// file, err := os.Open(fmt.Sprintf("%s/wordpress.tar.gz", downloadDir))
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	// UnTar the downloaded file
-	fmt.Println(fmt.Sprintf("UnTaring into %s directory %s", downloadDir, string(129302)))
-	var fileReader io.ReadCloser = file
-	err = unTar(downloadDir, fileReader)
-	if err != nil {
-		panic(err)
-	}
+	// // UnTar the downloaded file
+	// fmt.Println(fmt.Sprintf("UnTaring into %s directory %s", downloadDir, string(129302)))
+	// var fileReader io.ReadCloser = file
+	// err = unTar(downloadDir, fileReader)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	// Move directory to app dir
-	oldDir := fmt.Sprintf("%s/wordpress/wp-admin", downloadDir)
-	newDir := "./wp-admin"
-	err = os.Rename(oldDir, newDir)
-	if err != nil {
-		panic(err)
-	}
+	// // Move directory to app dir
+	// oldDir := fmt.Sprintf("%s/wordpress/wp-admin", downloadDir)
+	// newDir := "./wp-admin"
+	// err = os.Rename(oldDir, newDir)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	// Delete set up directories
-	fmt.Println(fmt.Sprintf("Deleting %s directory and all it's children %s...", downloadDir, string(128561)))
-	err = cleanUp(downloadDir)
-	if err != nil {
-		panic(err)
+	// // Delete set up directories
+	// fmt.Println(fmt.Sprintf("Deleting %s directory and all it's children %s...", downloadDir, string(128561)))
+	// err = cleanUp(downloadDir)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// Ask if they want Docker to start detached
+	if prompter.YN(fmt.Sprintf("Do you want to start Docker Compose? %s", string(129300)), true) {
+		fmt.Println("Starting docker-compose in dev mode!\r")
+		args := "docker-compose"
+		args2 := "-f docker-compose.yml"
+		args3 := "-f docker-compose-dev.yml"
+		args4 := "up -d"
+		cmd := exec.Command(args, args2, args3, args4)
+		stdout, err := cmd.Output()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(string(stdout))
 	}
 }
