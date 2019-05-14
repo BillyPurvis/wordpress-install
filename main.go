@@ -10,8 +10,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
-	"strings"
 
 	"github.com/Songmu/prompter"
 )
@@ -114,7 +112,7 @@ func cleanUp(target string) error {
 
 func main() {
 	// Download the file, because you kinda need it
-	err := downloadFile(downloadDir, fmt.Sprintf("%v/%v", downloadDir, fileName), "https://wordpress.org/latest.tar.gz")
+	err := downloadFile(downloadDir, fmt.Sprintf("%v/%v", downloadDir, fileName), "https://wordpress.org/wordpress-5.1.1.tar.gz")
 	if err != nil {
 		panic(err)
 	}
